@@ -23,3 +23,24 @@ esDerivadoDeAnimal(Alimento) :-
 esDerivadoDeAnimal(Alimento) :-
     provieneDe(Alimento,Derivado),
     esDerivadoDeAnimal(Derivado).
+
+
+% 4. 5. )
+
+%Primera forma
+sandwichJQ(jamon).
+sandwichJQ(queso).
+sandwichJQ(pan).
+wokVegetales(arroz).
+wokVegetales(pan).
+wokVegetales(zanahoria).
+wokVegetales(cebolla).
+wokVegetales(morron).
+
+veganos(Alimento) :- not(esDerivadoDeAnimal(Alimento)).
+
+celiacos(Alimento) :- not(tieneGluten(Alimento)).
+
+omnivoros(Alimento).
+
+
