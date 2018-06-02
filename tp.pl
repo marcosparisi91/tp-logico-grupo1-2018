@@ -52,18 +52,14 @@ plato(wokVegetales, zanahoria).
 plato(wokVegetales, morron).
 
 
-veganos(Plato):- 
-    forall( plato(Plato, Alimento), esDerivadoDeAnimal(Alimento).
+veganos(Plato):-
+    forall(plato(Plato,Alimento), not(esDerivadoDeAnimal(Alimento)) ).
 
 celiacos(Plato):-
-    forall( plato(Plato, Alimento), tieneGluten(Alimento).
+    forall(plato(Plato, Alimento), not(tieneGluten(Alimento)) ).
 
-omnivoros(Plato).
+analia(Plato):-veganos(Plato).
 
+benito(Plato):-celiacos(Plato).
 
-analia(Plato):- not(veganos(Plato)).
-
-benito(Plato):- not(celiacos(Plato)).
-
-claudia(Plato) :- omnivoros(Plato).
-
+claudia(Plato).
