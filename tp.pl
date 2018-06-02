@@ -28,19 +28,42 @@ esDerivadoDeAnimal(Alimento) :-
 % 4. 5. )
 
 %Primera forma
-sandwichJQ(jamon).
-sandwichJQ(queso).
-sandwichJQ(pan).
-wokVegetales(arroz).
-wokVegetales(pan).
-wokVegetales(zanahoria).
-wokVegetales(cebolla).
-wokVegetales(morron).
+%%sandwichJQ(jamon).
+%%sandwichJQ(queso).
+%%sandwichJQ(pan).
+%%wokVegetales(arroz).
+%%wokVegetales(pan).
+%%wokVegetales(zanahoria).
+%%wokVegetales(cebolla).
+%%wokVegetales(morron).
 
-veganos(Alimento) :- not(esDerivadoDeAnimal(Alimento)).
+%Segunda forma
+%%plato(sandwichJQ(jamon, queso, pan)).
+%%plato(wokVegetales(arroz,pan,cebolla,zanahoria,morron)).
 
-celiacos(Alimento) :- not(tieneGluten(Alimento)).
+%Tercera forma
+plato(sandwichJQ, jamon).
+plato(sandwichJQ, queso).
+plato(sandwichJQ, pan).
+plato(wokVegetales, arroz).
+plato(wokVegetales, pan).
+plato(wokVegetales, cebolla).
+plato(wokVegetales, zanahoria).
+plato(wokVegetales, morron).
 
-omnivoros(Alimento).
 
+veganos(Plato):- 
+    forall( plato(Plato, Alimento), esDerivadoDeAnimal(Alimento).
+
+celiacos(Plato):-
+    forall( plato(Plato, Alimento), tieneGluten(Alimento).
+
+omnivoros(Plato).
+
+
+analia(Plato):- not(veganos(Plato)).
+
+benito(Plato):- not(celiacos(Plato)).
+
+claudia(Plato) :- omnivoros(Plato).
 
