@@ -55,26 +55,29 @@ plato(wokVegetales, cebolla).
 plato(wokVegetales, zanahoria).
 plato(wokVegetales, morron).
 
-
-veganos(Plato):-
+esVegano(Plato):-
     forall(plato(Plato,Alimento), not(esDerivadoDeAnimal(Alimento)) ).
 
-celiacos(Plato):-
+esCeliaco(Plato):-
+    forall(plato(Plato, Alimento), not(tieneGluten(Alimento)) ).
+
+aplicaDieta(dietaVegana):-
+	forall(plato(Plato,Alimento), not(esDerivadoDeAnimal(Alimento)) ).
+
+aplicaDieta(dietaCeliaca):-
     forall(plato(Plato, Alimento), not(tieneGluten(Alimento)) ).
 
 analia(Plato):-veganos(Plato).
-
 benito(Plato):-celiacos(Plato).
-
 claudia(Plato).
 
 % 6 , 7. )
 
-esRecomendable(dietaVegana,hipertension).
-esRecomendable(dietaVegana,colesterolAlto).
+esRecomendable(dietaVegana,enfermedad(hipertension,_)).
+esRecomendable(dietaVegana,enfermedad(colesterol,_)).
 
-esRecomendable(dietaCeliaca,intoleranteAlGluten).
-esRecomendable(dietaCeliaca,obesidad).
+esRecomendable(dietaCeliaca,enfermedad(intoleranciaAlGluten,_)).
+esRecomendable(dietaCeliaca,enfermedad(obesidad,_)).
 
 diagnostico(analia,diagnosticoDePrevension( enfermedad(obesidad,5) ) ).
 diagnostico(benito,diagnosticoDePrevension( enfermedad(hipertension,4) ) ).
@@ -88,6 +91,20 @@ esPeligroso(diagnosticoDePrevension( enfermedad(_,Nivel))):- mayorA10( Nivel * 2
 esPeligroso(diagnosticoCritico( enfermedad(_,Nivel))):- mayorA10( Nivel * 5 ).
 
 mayorA10(X):- X > 10 .
+
+recomendarPlatos(Persona,PlatosRecomendados):-
+	diagnostico(Persona,Diagnostico) ,
+	obtenerDietaRecomendable(Diagnostico,DietaRecomendable).
+	obtenerPlatosQueCumpleConLaDieta(DietaRecomendable,PlatosRecomendados).
+
+obtenerDietaRecomendable(diagnosticoDePrevension( enfermedad(Enfermedad,_)),DietaRecomendable):-
+	esRecomendable( DietaRecomendable , enfermedad(Enfermedad,_) ).
+
+obtenerDietaRecomendable(diagnosticoCritico( enfermedad(Enfermedad,_)),DietaRecomendable):-
+	esRecomendable( DietaRecomendable , enfermedad(Enfermedad,_) ).
+
+obtenerPlatosQueCumpleConLaDieta(dietaVegana,Plato):- esVegano(Plato).
+obtenerPlatosQueCumpleConLaDieta(dietaCeliaca,Plato):- esCeliaco(Plato).
 
 %diagnosticoDePrevension( enfermedad(obesidad,5) )
 %diagnosticoDePrevension( enfermedad(hipertension,4) )
