@@ -87,10 +87,10 @@ correRiesgo(Persona):-
 	diagnostico(Persona,Diagnostico) , 
 	esPeligroso(Diagnostico).
 
-esPeligroso(diagnosticoDePrevension( enfermedad(_,Nivel))):- mayorA10( Nivel * 2 ).
-esPeligroso(diagnosticoCritico( enfermedad(_,Nivel))):- mayorA10( Nivel * 5 ).
+esPeligroso(diagnosticoDePrevension( enfermedad(_,Nivel))):- mayorIgualA10( Nivel * 2 ).
+esPeligroso(diagnosticoCritico( enfermedad(_,Nivel))):- mayorIgualA10( Nivel * 5 ).
 
-mayorA10(X):- X > 10 .
+mayorIgualA10(X):- X >= 10 .
 
 recomendarPlatos(Persona,PlatosRecomendados):-
 	diagnostico(Persona,Diagnostico) ,
@@ -106,26 +106,42 @@ obtenerDietaRecomendable(diagnosticoCritico( enfermedad(Enfermedad,_)),DietaReco
 obtenerPlatosQueCumpleConLaDieta(dietaVegana,Plato):- esVegano(Plato).
 obtenerPlatosQueCumpleConLaDieta(dietaCeliaca,Plato):- esCeliaco(Plato).
 
-%diagnosticoDePrevension( enfermedad(obesidad,5) )
-%diagnosticoDePrevension( enfermedad(hipertension,4) )
-%diagnosticoCritico( enfermedad(colesterol,3) )
-
-%peligrosidad(diagnosticoDePrevension( enfermedad(hipertension,4) )).
-%esPeligroso(diagnosticoDePrevension( enfermedad(hipertension,4) )).
-
 :- begin_tests(es_lacteo_fondeau).
 test(es_lacteo_fondeau):- esLacteo(fondeau).
 :- end_tests(es_lacteo_fondeau).
 
-:- begin_tests(diagnostico_prevencion_obesidad_5_da_10).
-test(diagnostico_prevencion_obesidad_5_da_10):- diagnosticoDePrevension(analia,enfermedad(obesidad,5),Peligrosidad) , Peligrosidad is 10.
-:- end_tests(diagnostico_prevencion_obesidad_5_da_10).
+:- begin_tests(diagnostico_prevencion_obesidad_5_da_10_es_peligroso).
+test(diagnostico_prevencion_obesidad_5_da_10_es_peligroso):- esPeligroso(diagnosticoDePrevension( enfermedad(obesidad,5) )).
+:- end_tests(diagnostico_prevencion_obesidad_5_da_10_es_peligroso).
 
-:- begin_tests(diagnostico_prevencion_hipertension_4_da_8).
-test(diagnostico_prevencion_hipertension_4_da_8):- diagnosticoDePrevension(benito,enfermedad(hipertension,4),Peligrosidad) , Peligrosidad is 8.
-:- end_tests(diagnostico_prevencion_hipertension_4_da_8).
+:- begin_tests(diagnostico_prevencion_hipertension_4_da_8_no_es_peligroso).
+test(diagnostico_prevencion_hipertension_4_da_8_no_es_peligroso,fail):- esPeligroso(diagnosticoDePrevension( enfermedad(hipertension,4) )).
+:- end_tests(diagnostico_prevencion_hipertension_4_da_8_no_es_peligroso).
 
-:- begin_tests(diagnostico_critico_colesterol_3_da_15).
-test(diagnostico_critico_colesterol_3_da_15):- diagnosticoCritico(claudia,enfermedad(colesterol,3),Peligrosidad) , Peligrosidad is 15.
-:- end_tests(diagnostico_critico_colesterol_3_da_15).
+:- begin_tests(diagnostico_critico_colesterol_3_da_15_es_peligroso).
+test(diagnostico_critico_colesterol_3_da_15_es_peligroso):- esPeligroso(diagnosticoCritico(claudia,enfermedad(colesterol,3)).
+:- end_tests(diagnostico_critico_colesterol_3_da_15_es_peligroso).
 
+:- begin_tests(corre_riesgo_analia).
+test(corre_riesgo_analia_falso):- correRiesgo(analia).
+:- end_tests(corre_riesgo_analia_falso).
+
+:- begin_tests(corre_riesgo_benito_falso).
+test(corre_riesgo_benito_falso,fail):- correRiesgo(benito).
+:- end_tests(corre_riesgo_benito_falso).
+
+:- begin_tests(corre_riesgo_claudia).
+test(corre_riesgo_claudia):- correRiesgo(claudia).
+:- end_tests(corre_riesgo_claudia).
+
+:- begin_tests(dieta_para_diagnostico_de_prevension_de_obesidad_es_celiaca).
+test(dieta_para_diagnostico_de_prevension_de_obesidad_es_celiaca):- obtenerDietaRecomendable(diagnosticoDePrevension( enfermedad(obesidad,5) ),DietaRecomendable) , DietaRecomendable is dietaCeliaca.
+:- end_tests(dieta_para_diagnostico_de_prevension_de_obesidad_es_celiaca).
+
+:- begin_tests(dieta_para_diagnostico_de_prevension_de_hipertension_es_celiaca).
+test(dieta_para_diagnostico_de_prevension_de_hipertension_es_celiaca):- obtenerDietaRecomendable(diagnosticoDePrevension( enfermedad(hipertension,4) ),DietaRecomendable) , DietaRecomendable is dietaCeliaca.
+:- end_tests(dieta_para_diagnostico_de_prevension_de_hipertension_es_celiaca).
+
+:- begin_tests(dieta_para_diagnostico_critico_de_colesterol_es_vegana).
+test(dieta_para_diagnostico_critico_de_colesterol_es_vegana):- obtenerDietaRecomendable(diagnosticoCritico( enfermedad(colesterol,3) ),DietaRecomendable) , DietaRecomendable is dietaVegana.
+:- end_tests(dieta_para_diagnostico_critico_de_colesterol_es_vegana).
