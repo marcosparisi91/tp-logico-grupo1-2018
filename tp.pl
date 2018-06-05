@@ -10,19 +10,22 @@ esAnimal(vaca).
 esAnimal(cerdo).
 
 esLacteo(Alimento) :- 
-    provieneDe(Alimento,leche).
+    esDerivadoDe(Alimento,leche).
 
 tieneGluten(Alimento) :- 
-        provieneDe(Alimento,trigo).
+    esDerivadoDe(Alimento,trigo).
         
 esDerivadoDeAnimal(Alimento) :-
     esAnimal(Algo),
-    provieneDe(Alimento,Algo).
-
+    esDerivadoDe(Alimento,Algo).
     
-esDerivadoDeAnimal(Alimento) :-
-    provieneDe(Alimento,Derivado),
-    esDerivadoDeAnimal(Derivado).
+esDerivadoDe(Alimento,AlimentoDelQueDeriva):-
+	provieneDe(Alimento,AlimentoDelQueDeriva).
+
+esDerivadoDe(Alimento,AlimentoDelQueDeriva):-
+	provieneDe(Alimento,AlimentoDelQueProviene),
+	AlimentoDelQueProviene \= AlimentoDelQueDeriva,
+	provieneDe(AlimentoDelQueProviene,AlimentoDelQueDeriva).
 
 
 % 4. 5. )
@@ -45,6 +48,7 @@ esDerivadoDeAnimal(Alimento) :-
 plato(sandwichJQ, jamon).
 plato(sandwichJQ, queso).
 plato(sandwichJQ, pan).
+
 plato(wokVegetales, arroz).
 plato(wokVegetales, pan).
 plato(wokVegetales, cebolla).
@@ -63,3 +67,48 @@ analia(Plato):-veganos(Plato).
 benito(Plato):-celiacos(Plato).
 
 claudia(Plato).
+
+% 6 , 7. )
+
+esRecomendable(dietaVegana,hipertension).
+esRecomendable(dietaVegana,colesterolAlto).
+
+esRecomendable(dietaCeliaca,intoleranteAlGluten).
+esRecomendable(dietaCeliaca,obesidad).
+
+diagnostico(analia,diagnosticoDePrevension( enfermedad(obesidad,5) ) ).
+diagnostico(benito,diagnosticoDePrevension( enfermedad(hipertension,4) ) ).
+diagnostico(claudia,diagnosticoCritico( enfermedad(colesterol,3) ) ).
+
+correRiesgo(Persona):- 
+	diagnostico(Persona,Diagnostico) , 
+	esPeligroso(Diagnostico).
+
+esPeligroso(diagnosticoDePrevension( enfermedad(_,Nivel))):- mayorA10( Nivel * 2 ).
+esPeligroso(diagnosticoCritico( enfermedad(_,Nivel))):- mayorA10( Nivel * 5 ).
+
+mayorA10(X):- X > 10 .
+
+%diagnosticoDePrevension( enfermedad(obesidad,5) )
+%diagnosticoDePrevension( enfermedad(hipertension,4) )
+%diagnosticoCritico( enfermedad(colesterol,3) )
+
+%peligrosidad(diagnosticoDePrevension( enfermedad(hipertension,4) )).
+%esPeligroso(diagnosticoDePrevension( enfermedad(hipertension,4) )).
+
+:- begin_tests(es_lacteo_fondeau).
+test(es_lacteo_fondeau):- esLacteo(fondeau).
+:- end_tests(es_lacteo_fondeau).
+
+:- begin_tests(diagnostico_prevencion_obesidad_5_da_10).
+test(diagnostico_prevencion_obesidad_5_da_10):- diagnosticoDePrevension(analia,enfermedad(obesidad,5),Peligrosidad) , Peligrosidad is 10.
+:- end_tests(diagnostico_prevencion_obesidad_5_da_10).
+
+:- begin_tests(diagnostico_prevencion_hipertension_4_da_8).
+test(diagnostico_prevencion_hipertension_4_da_8):- diagnosticoDePrevension(benito,enfermedad(hipertension,4),Peligrosidad) , Peligrosidad is 8.
+:- end_tests(diagnostico_prevencion_hipertension_4_da_8).
+
+:- begin_tests(diagnostico_critico_colesterol_3_da_15).
+test(diagnostico_critico_colesterol_3_da_15):- diagnosticoCritico(claudia,enfermedad(colesterol,3),Peligrosidad) , Peligrosidad is 15.
+:- end_tests(diagnostico_critico_colesterol_3_da_15).
+

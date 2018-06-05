@@ -1,0 +1,1 @@
+cuadrado(a,b):-a<b.
